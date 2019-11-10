@@ -68,6 +68,7 @@ class SublimeGDBModule : public maiken::Module {
 
  public:
   void link(maiken::Application &a, const YAML::Node &node) KTHROW(std::exception) override {
+    if (a.getMain().empty()) return;
     VALIDATE_NODE(node);
     std::string projectFile = "";
     if (node["project_file"])
@@ -89,8 +90,7 @@ class SublimeGDBModule : public maiken::Module {
                                                                              << errs;
     }
 
-    for (auto const *target : a.project().getBinaryTargets())
-      checkTarget(root["settings"]["sublimegdb_executables"], target);
+    checkTarget(root["settings"]["sublimegdb_executables"], a);
 
     Json::StreamWriterBuilder builder;
     builder["commentStyle"] = "None";
@@ -100,17 +100,17 @@ class SublimeGDBModule : public maiken::Module {
     writer->write(root, &outputFileStream);
   }
 
-  void checkTarget(Json::Value &exes, maiken::Application const *target) {
-    if (!exes[target->baseLibFilename()]) createTarget(exes, target);
-    checkLDPath(exes[target->baseLibFilename()], target);
+  void checkTarget(Json::Value &exes, maiken::Application const &target) {
+    if (!exes[target.baseLibFilename()]) createTarget(exes, target);
+    checkLDPath(exes[target.baseLibFilename()], target);
   }
 
-  void checkLDPath(Json::Value &exe, maiken::Application const *target) {
+  void checkLDPath(Json::Value &exe, maiken::Application const &target) {
     std::string arg;
     std::vector<std::string> paths, befores;
     std::vector<std::pair<std::string, std::string> > envies;
 
-    for (const auto &s : target->libraryPaths())
+    for (const auto &s : target.libraryPaths())
       if (std::find(paths.begin(), paths.end(), s) == paths.end()) paths.emplace_back(s);
     for (const auto &s : paths) arg += s + kul::env::SEP();
     if (!arg.empty()) arg.pop_back();
@@ -140,9 +140,9 @@ class SublimeGDBModule : public maiken::Module {
     for (auto const &ev : envies) exe["env"][ev.first] = ev.second;
   }
 
-  void createTarget(Json::Value &exes, maiken::Application const *target) {
-    auto exe = target->baseLibFilename();
-    exes[exe]["workingdir"] = "${folder:${project_path:mkn.yaml}}/bin/" + target->buildDir().name();
+  void createTarget(Json::Value &exes, maiken::Application const &target) {
+    auto exe = target.baseLibFilename();
+    exes[exe]["workingdir"] = "${folder:${project_path:mkn.yaml}}/bin/" + target.buildDir().name();
     exes[exe]["commandline"] = "gdb --interpreter=mi ./" + exe;
   }
 };
