@@ -20,7 +20,6 @@ int main(int argc, char* argv[]) {
     loader->module()->link(*appTest, node);
     loader->module()->pack(*appTest, node);
     loader->unload();
-    for (const auto inc : app->includes()) KLOG(INF) << inc.first;
   } catch (const kul::Exception& e) {
     KLOG(ERR) << e.what();
     return 2;

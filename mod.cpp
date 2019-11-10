@@ -130,10 +130,9 @@ class SublimeGDBModule : public maiken::Module {
     doVar("LD_LIBRARY_PATH");
 #endif
     for (auto &ev : envies) {
-      for (auto str : kul::String::SPLIT(ev.second, kul::env::SEP())) {
+      for (auto str : kul::String::SPLIT(ev.second, kul::env::SEP()))
         if (ev.second.find(str) != std::string::npos && ev.second.find(str) != ev.second.rfind(str))
           kul::String::REPLACE(ev.second, str + kul::env::SEP(), "");
-      }
       while (ev.second.find("::") != std::string::npos) kul::String::REPLACE(ev.second, "::", ":");
     }
 
