@@ -2,6 +2,8 @@
 
 ** Link time plugin to modify sublime.project files to synchronise binaries targets for debugging with https://github.com/quarnster/SublimeGDB **
 
+[![Travis](https://travis-ci.org/mkn-mod/subl.gdb.svg?branch=master)](https://travis-ci.org/mkn-mod/subl.gdb)
+
 ## Prerequisites
   [maiken](https://github.com/Dekken/maiken)
   [parse.json](https://github.com/mkn/parse.json)
