@@ -1,19 +1,21 @@
 {
-  "folders" :
-  [
-    {
-      "path" : "."
-    }
-  ],
-  "settings" :
-  {
-    "sublimegdb_executables" :
-    {
-      "test" :
-      {
-        "commandline" : "gdb --interpreter=mi ./test",
-        "workingdir" : "${folder:${project_path:mkn.yaml}}/bin/test"
-      }
-    }
-  }
+	"folders":
+	[
+		{
+			"path": "."
+		}
+	],
+	"settings":
+	{
+		"sublimegdb_executables":
+		{
+			"test":
+			{
+				"commandline": "gdb --interpreter=mi ./test",
+				"workingdir": "${folder:${project_path:mkn.yaml}}/bin/test"
+			}
+		}
+	}
 }
+
+

@@ -18,6 +18,7 @@ matrix:
   - os: osx
     language: c++
     compiler: clang
+    osx_image: xcode11
 
 before_install:
   - git clone https://github.com/Dekken/maiken --depth 1 -b master maiken
