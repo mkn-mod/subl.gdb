@@ -5,33 +5,31 @@ branches:
 matrix:
   include:
   - os: linux
-    dist: xenial
+    dist: bionic
     sudo: required
-    language: cpp
     compiler: gcc
     addons:
       apt:
         sources:
-          - ubuntu-toolchain-r-test
+        - sourceline: 'ppa:ubuntu-toolchain-r/test'
         packages:
           - g++-8
+    env:
+      - MATRIX_EVAL="CC=gcc-8 && CXX=g++-8"
   - os: osx
-    language: c++
     compiler: clang
     osx_image: xcode11
 
 before_install:
-  - git clone https://github.com/Dekken/maiken --depth 1 -b master maiken
   - |
-    if [[ "${TRAVIS_OS_NAME}" == "osx" ]]; then
-      make bsd -C maiken CXX="clang++"
-    elif [[ "${TRAVIS_OS_NAME}" == "linux" ]]; then
-      sudo ln -s /usr/bin/gcc-8 /usr/local/bin/gcc; sudo ln -s /usr/bin/g++-8 /usr/local/bin/g++; gcc -v;
-      make nix -C maiken
-    fi
-  - mv maiken/mkn .
+    git clone https://github.com/Dekken/maiken --depth 10 -b master maiken
+    [[ "${TRAVIS_OS_NAME}" == "osx" ]] && make bsd -C maiken CXX="clang++"
+    [[ "${TRAVIS_OS_NAME}" == "linux" ]] && eval "${MATRIX_EVAL}"
+    [[ "${TRAVIS_OS_NAME}" == "linux" ]] && make nix -C maiken CXX="$CXX"
+    mv maiken/mkn .
 
 script:
-  - set -e
-  - MKN_LIB_LINK_LIB=1 KLOG=3 ./mkn build -tOa "-fPIC -std=c++14" -d
-  - MKN_LIB_LINK_LIB=1 KLOG=3 ./mkn build -tOa "-fPIC -std=c++14" -p test run -l "-pthread -ldl"
+  - |
+    export MKN_LIB_LINK_LIB="1" KUL_GIT_CO="--depth 3" KLOG="3" CC CXX
+    ./mkn build -tOa "-fPIC -std=c++14" -d
+    ./mkn build -tOa "-fPIC -std=c++14" -p test run -l "-pthread -ldl"
