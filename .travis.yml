@@ -31,5 +31,5 @@ before_install:
 script:
   - |
     export MKN_LIB_LINK_LIB="1" KUL_GIT_CO="--depth 3" KLOG="3" CC CXX
-    ./mkn build -tOa "-fPIC -std=c++14" -d
-    ./mkn build -tOa "-fPIC -std=c++14" -p test run -l "-pthread -ldl"
+    ./mkn build -tOa "-fPIC -std=c++17" -d
+    ./mkn build -tOa "-fPIC -std=c++17" -p test run -l "-pthread -ldl"
