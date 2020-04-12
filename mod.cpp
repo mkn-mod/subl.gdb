@@ -100,12 +100,12 @@ class SublimeGDBModule : public maiken::Module {
     writer->write(root, &outputFileStream);
   }
 
-  void checkTarget(Json::Value &exes, maiken::Application const &target) {
+  void checkTarget(Json::Value &exes, maiken::Application  &target) {
     if (!exes[target.baseLibFilename()]) createTarget(exes, target);
     checkLDPath(exes[target.baseLibFilename()], target);
   }
 
-  void checkLDPath(Json::Value &exe, maiken::Application const &target) {
+  void checkLDPath(Json::Value &exe, maiken::Application  &target) {
     std::string arg;
     std::vector<std::string> paths, befores;
     std::vector<std::pair<std::string, std::string> > envies;
@@ -135,6 +135,10 @@ class SublimeGDBModule : public maiken::Module {
           kul::String::REPLACE(ev.second, str + kul::env::SEP(), "");
       while (ev.second.find("::") != std::string::npos) kul::String::REPLACE(ev.second, "::", ":");
     }
+
+    for (const auto &ev : target.envVars())
+      if (std::string(ev.name()).find("MKN_") != 0)
+        exe["env"][ev.name()] = ev.toString();
 
     for (auto const &ev : envies) exe["env"][ev.first] = ev.second;
   }
